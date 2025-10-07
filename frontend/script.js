@@ -115,25 +115,49 @@ function addMessage(content, type, sources = null, isWelcome = false) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type}${isWelcome ? ' welcome-message' : ''}`;
     messageDiv.id = `message-${messageId}`;
-    
+
     // Convert markdown to HTML for assistant messages
     const displayContent = type === 'assistant' ? marked.parse(content) : escapeHtml(content);
-    
+
     let html = `<div class="message-content">${displayContent}</div>`;
-    
+
     if (sources && sources.length > 0) {
+        // Format sources as clickable links
+        const formattedSources = sources.map(source => {
+            // Handle both string and object sources
+            if (typeof source === 'string') {
+                // Source is a plain string
+                return escapeHtml(source);
+            } else if (typeof source === 'object' && source !== null) {
+                // Source is an object with text and possibly link
+                const text = source.text || '[No text]';
+                const link = source.link;
+
+                if (link && typeof link === 'string' && link.startsWith('http')) {
+                    // Valid link exists
+                    return `<a href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(text)}</a>`;
+                } else {
+                    // No valid link
+                    return escapeHtml(text);
+                }
+            } else {
+                // Fallback for unexpected types
+                return escapeHtml(String(source));
+            }
+        }).join(', ');
+
         html += `
             <details class="sources-collapsible">
                 <summary class="sources-header">Sources</summary>
-                <div class="sources-content">${sources.join(', ')}</div>
+                <div class="sources-content">${formattedSources}</div>
             </details>
         `;
     }
-    
+
     messageDiv.innerHTML = html;
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-    
+
     return messageId;
 }
 

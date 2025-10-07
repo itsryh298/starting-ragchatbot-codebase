@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import os
 
 from config import config
@@ -40,10 +40,15 @@ class QueryRequest(BaseModel):
     query: str
     session_id: Optional[str] = None
 
+class Source(BaseModel):
+    """Model for a source citation with optional link"""
+    text: str
+    link: Optional[str] = None
+
 class QueryResponse(BaseModel):
     """Response model for course queries"""
     answer: str
-    sources: List[str]
+    sources: List[Source]
     session_id: str
 
 class CourseStats(BaseModel):
@@ -53,7 +58,7 @@ class CourseStats(BaseModel):
 
 # API Endpoints
 
-@app.post("/api/query", response_model=QueryResponse)
+@app.post("/api/query")
 async def query_documents(request: QueryRequest):
     """Process a query and return response with sources"""
     try:
@@ -61,15 +66,33 @@ async def query_documents(request: QueryRequest):
         session_id = request.session_id
         if not session_id:
             session_id = rag_system.session_manager.create_session()
-        
+
         # Process query using RAG system
         answer, sources = rag_system.query(request.query, session_id)
-        
-        return QueryResponse(
-            answer=answer,
-            sources=sources,
-            session_id=session_id
-        )
+
+        # Ensure sources are properly formatted as list of dicts
+        formatted_sources = []
+        if sources:
+            for source in sources:
+                if isinstance(source, dict):
+                    # Already a dict with text and link
+                    formatted_sources.append({
+                        "text": source.get("text", ""),
+                        "link": source.get("link", None)
+                    })
+                elif isinstance(source, str):
+                    # Convert string to dict format
+                    formatted_sources.append({
+                        "text": source,
+                        "link": None
+                    })
+
+        # Return plain dict to avoid Pydantic serialization issues
+        return {
+            "answer": answer,
+            "sources": formatted_sources,
+            "session_id": session_id
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
