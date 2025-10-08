@@ -4,7 +4,11 @@
       "Bash(git worktree:*)",
       "Bash(git merge:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git diff:*)",
+      "Bash(git checkout:*)",
+      "Bash(uv lock:*)",
+      "Bash(uv sync:*)"
     ],
     "allowedCommands": [
       "uv",
