@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git worktree:*)",
+      "Bash(git merge:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "allowedCommands": [
+      "uv",
+      "git",
+      "npm",
+      "python",
+      "pytest"
+    ],
+    "requireApprovalForWrite": false,
+    "requireApprovalForBash": false
+  },
+  "environmentVariables": {
+    "PYTHONUNBUFFERED": "1"
+  }
+}
