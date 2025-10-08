@@ -1,10 +1,12 @@
+from typing import List, Optional
+
 import anthropic
-from typing import List, Optional, Dict, Any
 from config import config
+
 
 class AIGenerator:
     """Handles interactions with Anthropic's Claude API for generating responses"""
-    
+
     # Static system prompt to avoid rebuilding on each call
     SYSTEM_PROMPT = """ You are an AI assistant specialized in course materials and educational content with access to comprehensive search tools for course information.
 
@@ -35,22 +37,21 @@ All responses must be:
 4. **Example-supported** - Include relevant examples when they aid understanding
 Provide only the direct answer to what was asked.
 """
-    
+
     def __init__(self, api_key: str, model: str):
         self.client = anthropic.Anthropic(api_key=api_key)
         self.model = model
-        
+
         # Pre-build base API parameters
-        self.base_params = {
-            "model": self.model,
-            "temperature": 0,
-            "max_tokens": 800
-        }
-    
-    def generate_response(self, query: str,
-                         conversation_history: Optional[str] = None,
-                         tools: Optional[List] = None,
-                         tool_manager=None) -> str:
+        self.base_params = {"model": self.model, "temperature": 0, "max_tokens": 800}
+
+    def generate_response(
+        self,
+        query: str,
+        conversation_history: Optional[str] = None,
+        tools: Optional[List] = None,
+        tool_manager=None,
+    ) -> str:
         """
         Generate AI response with optional tool usage and conversation context.
 
@@ -78,7 +79,7 @@ Provide only the direct answer to what was asked.
         api_params = {
             **self.base_params,
             "messages": messages,
-            "system": system_content
+            "system": system_content,
         }
 
         # Add tools if available
@@ -91,30 +92,34 @@ Provide only the direct answer to what was asked.
 
         # Handle sequential tool execution if needed
         tool_round = 0
-        while (response.stop_reason == "tool_use" and
-               tool_round < config.MAX_TOOL_ROUNDS and
-               tool_manager is not None):
+        while (
+            response.stop_reason == "tool_use"
+            and tool_round < config.MAX_TOOL_ROUNDS
+            and tool_manager is not None
+        ):
 
             # Determine if this is the final tool round
-            is_final_round = (tool_round == config.MAX_TOOL_ROUNDS - 1)
+            is_final_round = tool_round == config.MAX_TOOL_ROUNDS - 1
 
             # Execute tools and get next response
             response, messages = self._handle_tool_execution(
-                response,
-                messages,
-                system_content,
-                tools,
-                tool_manager,
-                is_final_round
+                response, messages, system_content, tools, tool_manager, is_final_round
             )
 
             tool_round += 1
 
         # Extract and return text response
         return self._extract_text_response(response)
-    
-    def _handle_tool_execution(self, current_response, messages: list, system_content: str,
-                              tools: Optional[List], tool_manager, is_final_round: bool):
+
+    def _handle_tool_execution(
+        self,
+        current_response,
+        messages: list,
+        system_content: str,
+        tools: Optional[List],
+        tool_manager,
+        is_final_round: bool,
+    ):
         """
         Handle execution of tool calls and get follow-up response.
 
@@ -138,8 +143,7 @@ Provide only the direct answer to what was asked.
             if content_block.type == "tool_use":
                 try:
                     tool_result = tool_manager.execute_tool(
-                        content_block.name,
-                        **content_block.input
+                        content_block.name, **content_block.input
                     )
                     # Ensure non-empty result
                     if not tool_result:
@@ -147,11 +151,13 @@ Provide only the direct answer to what was asked.
                 except Exception as e:
                     tool_result = f"Tool execution failed: {str(e)}"
 
-                tool_results.append({
-                    "type": "tool_result",
-                    "tool_use_id": content_block.id,
-                    "content": tool_result
-                })
+                tool_results.append(
+                    {
+                        "type": "tool_result",
+                        "tool_use_id": content_block.id,
+                        "content": tool_result,
+                    }
+                )
 
         # Add tool results as single message
         if tool_results:
@@ -161,7 +167,7 @@ Provide only the direct answer to what was asked.
         api_params = {
             **self.base_params,
             "messages": messages,
-            "system": system_content
+            "system": system_content,
         }
 
         # Only include tools if not final round
