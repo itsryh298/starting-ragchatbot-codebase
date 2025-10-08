@@ -219,3 +219,4 @@ FastAPI serves frontend as static files via `app.mount("/", StaticFiles(director
 - Always use uv to run server do not use pip directly
 - Make sure to use uv to manage all dependencies
 - Use uv to run python files
+- add the testing protocol to the local memory
