@@ -35,3 +35,52 @@ markers = [
     "integration: Integration tests for component interactions",
     "api: API endpoint tests",
 ]
+
+[dependency-groups]
+dev = [
+    "black>=25.9.0",
+    "flake8>=7.3.0",
+    "isort>=6.1.0",
+    "mypy>=1.18.2",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | chroma_db
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+skip_gitignore = true
+known_first_party = ["backend"]
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+check_untyped_defs = false
+# Focus on basic type checking without strict enforcement
+warn_redundant_casts = true
+warn_unused_ignores = false
+no_implicit_optional = false
+exclude = [
+    "chroma_db",
+    ".venv",
+]

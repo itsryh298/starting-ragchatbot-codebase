@@ -33,6 +33,45 @@ uv sync
 uv add <package-name>
 ```
 
+### Code Quality Tools
+
+**Format code (auto-fix):**
+```bash
+# Git Bash on Windows
+./format.sh
+
+# Windows CMD/PowerShell
+format.bat
+```
+
+**Run linting checks:**
+```bash
+# Git Bash on Windows
+./lint.sh
+
+# Windows CMD/PowerShell
+lint.bat
+```
+
+**Run all quality checks (CI-style):**
+```bash
+# Git Bash on Windows
+./quality-check.sh
+
+# Windows CMD/PowerShell
+quality-check.bat
+```
+
+**Configured tools:**
+- **black**: Code formatter (line length: 88)
+- **isort**: Import sorter (compatible with black)
+- **flake8**: Linter for style and errors
+- **mypy**: Static type checker
+
+**Configuration files:**
+- `pyproject.toml`: black, isort, and mypy settings
+- `.flake8`: flake8 configuration
+
 ### Environment Setup
 
 Required: `.env` file in root directory with:
@@ -219,4 +258,7 @@ FastAPI serves frontend as static files via `app.mount("/", StaticFiles(director
 - Always use uv to run server do not use pip directly
 - Make sure to use uv to manage all dependencies
 - Use uv to run python files
-- add the testing protocol to the local memory
+- Run `./format.sh` (or `format.bat` on Windows) before committing to ensure code formatting
+- Run `./quality-check.sh` (or `quality-check.bat` on Windows) to verify all quality checks pass
+- All Python code should follow black formatting standards (88 character line length)
+- Imports should be sorted with isort (automatically compatible with black)

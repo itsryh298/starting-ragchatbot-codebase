@@ -54,3 +54,54 @@ The application will be available at:
 - Web Interface: `http://localhost:8000`
 - API Documentation: `http://localhost:8000/docs`
 
+## Development
+
+### Code Quality Tools
+
+This project uses several code quality tools to maintain consistency and catch potential issues:
+
+- **black**: Automatic code formatter (88 character line length)
+- **isort**: Import statement organizer (compatible with black)
+- **flake8**: Linter for style guide enforcement and error detection
+- **mypy**: Static type checker for Python
+
+#### Quick Commands
+
+**Format code automatically:**
+```bash
+# Git Bash on Windows
+./format.sh
+
+# Windows CMD/PowerShell
+format.bat
+```
+
+**Run linting checks:**
+```bash
+# Git Bash on Windows
+./lint.sh
+
+# Windows CMD/PowerShell
+lint.bat
+```
+
+**Run all quality checks:**
+```bash
+# Git Bash on Windows
+./quality-check.sh
+
+# Windows CMD/PowerShell
+quality-check.bat
+```
+
+#### Development Workflow
+
+1. Make your code changes
+2. Run `./format.sh` to auto-format your code
+3. Run `./quality-check.sh` to verify all checks pass
+4. Commit your changes
+
+All quality tools are configured in:
+- `pyproject.toml` - black, isort, and mypy configuration
+- `.flake8` - flake8 configuration
+

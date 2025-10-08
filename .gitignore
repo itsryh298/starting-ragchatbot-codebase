@@ -8,6 +8,11 @@ __pycache__/
 *$py.class
 *.so
 .Python
+.mypy_cache/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
 
 # Virtual environments
 venv/
@@ -25,6 +30,9 @@ uploads/
 .idea/
 *.swp
 *.swo
+
+# Claude Code local settings
+.claude/*.local.json
 
 # OS
 .DS_Store
