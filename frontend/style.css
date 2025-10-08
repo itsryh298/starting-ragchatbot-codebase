@@ -5,7 +5,7 @@
     padding: 0;
 }
 
-/* CSS Variables */
+/* CSS Variables - Dark Mode (Default) */
 :root {
     --primary-color: #2563eb;
     --primary-hover: #1d4ed8;
@@ -24,6 +24,39 @@
     --welcome-border: #2563eb;
 }
 
+/* Light Mode Variables */
+body[data-theme="light"] {
+    /* Primary Colors - Accessible blue with good contrast */
+    --primary-color: #1d4ed8;
+    --primary-hover: #1e40af;
+
+    /* Backgrounds - Clean, bright surfaces */
+    --background: #f1f5f9;
+    --surface: #ffffff;
+    --surface-hover: #e2e8f0;
+
+    /* Text Colors - High contrast for accessibility (WCAG AAA) */
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+
+    /* Borders - Visible but subtle */
+    --border-color: #cbd5e1;
+
+    /* Message Backgrounds */
+    --user-message: #1d4ed8;
+    --assistant-message: #e2e8f0;
+
+    /* Shadows - Softer for light backgrounds */
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+
+    /* Focus Ring - Visible but not overwhelming */
+    --focus-ring: rgba(29, 78, 216, 0.3);
+
+    /* Welcome Message */
+    --welcome-bg: #dbeafe;
+    --welcome-border: #1d4ed8;
+}
+
 /* Base Styles */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -34,6 +67,31 @@ body {
     overflow: hidden;
     margin: 0;
     padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth Transitions for Theme Switching */
+.container,
+.main-content,
+.sidebar,
+.chat-main,
+.chat-container,
+.chat-messages,
+.message-content,
+.chat-input-container,
+#chatInput,
+#sendButton,
+.theme-toggle,
+.sidebar-section,
+.stat-item,
+.suggested-item,
+.new-chat-button,
+.course-title-item,
+.sources-content a {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
 }
 
 /* Container - Full Screen */
@@ -773,4 +831,209 @@ details[open] .suggested-header::before {
     .sidebar {
         width: 280px;
     }
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+}
+
+.theme-toggle:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px -1px rgba(0, 0, 0, 0.3);
+}
+
+.theme-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Theme Toggle Icons */
+.theme-toggle .sun-icon,
+.theme-toggle .moon-icon {
+    position: absolute;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+.theme-toggle .sun-icon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0);
+}
+
+.theme-toggle .moon-icon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+body[data-theme="light"] .theme-toggle .sun-icon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+body[data-theme="light"] .theme-toggle .moon-icon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0);
+}
+
+/* Responsive Theme Toggle */
+@media (max-width: 768px) {
+    .theme-toggle {
+        top: 1rem;
+        right: 1rem;
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* Light Mode Specific Overrides */
+
+/* Code Blocks in Light Mode */
+body[data-theme="light"] .message-content code {
+    background-color: rgba(15, 23, 42, 0.08);
+    color: #dc2626;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+body[data-theme="light"] .message-content pre {
+    background-color: #1e293b;
+    border: 1px solid #cbd5e1;
+}
+
+body[data-theme="light"] .message-content pre code {
+    background-color: transparent;
+    color: #e2e8f0;
+    border: none;
+}
+
+/* Blockquotes in Light Mode */
+body[data-theme="light"] .message-content blockquote {
+    border-left-color: #1d4ed8;
+    color: #475569;
+    background-color: rgba(29, 78, 216, 0.05);
+    padding: 0.5rem 1rem;
+    margin: 0.5rem 0;
+}
+
+/* Links in Light Mode */
+body[data-theme="light"] .sources-content a {
+    color: #1d4ed8;
+    background: rgba(29, 78, 216, 0.08);
+    border: 1px solid rgba(29, 78, 216, 0.2);
+}
+
+body[data-theme="light"] .sources-content a:hover {
+    color: #1e40af;
+    background: rgba(29, 78, 216, 0.15);
+    border-color: rgba(29, 78, 216, 0.4);
+}
+
+/* Scrollbar in Light Mode */
+body[data-theme="light"] .chat-messages::-webkit-scrollbar-track,
+body[data-theme="light"] .sidebar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+body[data-theme="light"] .chat-messages::-webkit-scrollbar-thumb,
+body[data-theme="light"] .sidebar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+}
+
+body[data-theme="light"] .chat-messages::-webkit-scrollbar-thumb:hover,
+body[data-theme="light"] .sidebar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Input and Button in Light Mode - Enhanced Borders */
+body[data-theme="light"] #chatInput {
+    border: 2px solid #cbd5e1;
+    background: #ffffff;
+}
+
+body[data-theme="light"] #chatInput:focus {
+    border-color: #1d4ed8;
+    background: #ffffff;
+}
+
+body[data-theme="light"] #sendButton {
+    background: #1d4ed8;
+    box-shadow: 0 2px 4px rgba(29, 78, 216, 0.2);
+}
+
+body[data-theme="light"] #sendButton:hover:not(:disabled) {
+    background: #1e40af;
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+}
+
+/* Sidebar Buttons in Light Mode */
+body[data-theme="light"] .new-chat-button:hover,
+body[data-theme="light"] .stats-header:hover,
+body[data-theme="light"] .suggested-header:hover {
+    color: #1d4ed8;
+}
+
+body[data-theme="light"] .suggested-item {
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+}
+
+body[data-theme="light"] .suggested-item:hover {
+    background: #f8fafc;
+    border-color: #1d4ed8;
+    color: #1d4ed8;
+}
+
+/* Stat Items in Light Mode */
+body[data-theme="light"] .stat-item {
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+}
+
+body[data-theme="light"] .stat-value {
+    color: #1d4ed8;
+}
+
+/* Loading Animation in Light Mode */
+body[data-theme="light"] .loading span {
+    background: #475569;
+}
+
+/* Welcome Message in Light Mode */
+body[data-theme="light"] .message.welcome-message .message-content {
+    background: #dbeafe;
+    border: 2px solid #1d4ed8;
+    box-shadow: 0 4px 16px rgba(29, 78, 216, 0.15);
+}
+
+/* Error and Success Messages in Light Mode */
+body[data-theme="light"] .error-message {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #f87171;
+}
+
+body[data-theme="light"] .success-message {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #4ade80;
 }
